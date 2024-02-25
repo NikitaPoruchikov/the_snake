@@ -43,16 +43,20 @@ clock = pygame.time.Clock()
 
 
 class GameObject:
+    """Родительский class GameObject"""
 
     def __init__(self, body_color=BOARD_BACKGROUND_COLOR) -> None:
+        """Метод опысывает центр поля и цвет фона"""
         self.position = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
         self.body_color = body_color
 
     def draw(self):
+        """Дэфолтный pass"""
         pass
 
 
 class Snake(GameObject):
+    """Класс для объекта змейка"""
 
     def __init__(self, body_color=SNAKE_COLOR) -> None:
         super().__init__(body_color)
@@ -63,6 +67,7 @@ class Snake(GameObject):
         self.length = 1
 
     def draw(self, surface):
+        """Метод который рисует змейку"""
         for position in self.positions[:-1]:
             rect = pygame.Rect(
                 (position[0], position[1]), (GRID_SIZE, GRID_SIZE))
@@ -80,6 +85,7 @@ class Snake(GameObject):
             pygame.draw.rect(surface, BOARD_BACKGROUND_COLOR, last_rect)
 
     def move(self):
+        """Метод обновляет позицию змейки."""
         head_x, head_y = self.positions[0]
         direction_x, direction_y = self.direction
 
@@ -92,29 +98,29 @@ class Snake(GameObject):
             self.last = self.positions.pop()
         else:
             self.last = None
-    # Обновляет позицию змейки (координаты каждой секции).
 
     def update_direction(self):
+        """Метод обновляет направление движения змейки"""
         if self.next_direction:
             self.direction = self.next_direction
             self.next_direction = None
-    # Обновляет направление движения змейки
 
     def get_head_position(self):
+        """Метод вызывается в случаи столкновения из reset"""
         self.positions = [self.position]
         return self.positions
-    # Возвращает позицию головы змейки.
 
     def reset(self):
+        """Метод сбрасывает змейку в начальное состояние"""
         if len(self.positions) != len(set(self.positions)):
             self.length = 1
             self.direction = RIGHT
             self.get_head_position()
             screen.fill(BOARD_BACKGROUND_COLOR)
-    # Сбрасывает змейку в начальное состояние после столкновения с собой.
 
 
 class Apple(GameObject):
+    """Класс Яблока"""
 
     def __init__(self, body_color=APPLE_COLOR) -> None:
         super().__init__(body_color)
@@ -122,18 +128,20 @@ class Apple(GameObject):
                          randint(0, 23) * GRID_SIZE)
 
     def draw(self, surface):
+        """Метод рисует яблоко"""
         rect = pygame.Rect(
             (self.position[0], self.position[1]), (GRID_SIZE, GRID_SIZE))
         pygame.draw.rect(surface, self.body_color, rect)
         pygame.draw.rect(surface, BORDER_COLOR, rect, 1)
 
     def randomize_position(self):
+        """Метод создает рандомные координаты спавна яблока."""
         self.position = (randint(0, 31) * GRID_SIZE,
                          randint(0, 23) * GRID_SIZE)
-    # Создаем рандомные координаты спавна яблока.
 
 
 def handle_keys(game_object):
+    """Функция позволяет нам передвигатся змейкой"""
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
@@ -150,7 +158,7 @@ def handle_keys(game_object):
 
 
 def main():
-
+    """Функция создания объектов"""
     apple = Apple()
     snake = Snake()
     screen.fill(BOARD_BACKGROUND_COLOR)
