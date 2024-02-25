@@ -1,7 +1,7 @@
 from random import randint
 
 import pygame
-
+# Привет Ревьювер!
 # Инициализация PyGame:
 pygame.init()
 
@@ -92,30 +92,34 @@ class Snake(GameObject):
             self.last = self.positions.pop()
         else:
             self.last = None
+    # Обновляет позицию змейки (координаты каждой секции).
 
     def update_direction(self):
         if self.next_direction:
             self.direction = self.next_direction
             self.next_direction = None
+    # Обновляет направление движения змейки
 
     def get_head_position(self):
-        head_snake = self.positions[0]
-        return head_snake
+        self.positions = [self.position]
+        return self.positions
+    # Возвращает позицию головы змейки.
 
     def reset(self):
         if len(self.positions) != len(set(self.positions)):
             self.length = 1
             self.direction = RIGHT
-            self.positions = [self.position]
+            self.get_head_position()
             screen.fill(BOARD_BACKGROUND_COLOR)
+    # Сбрасывает змейку в начальное состояние после столкновения с собой.
 
 
 class Apple(GameObject):
 
     def __init__(self, body_color=APPLE_COLOR) -> None:
         super().__init__(body_color)
-        self.position = (randint(0, 32) * GRID_SIZE,
-                         randint(0, 32) * GRID_SIZE)
+        self.position = (randint(0, 31) * GRID_SIZE,
+                         randint(0, 23) * GRID_SIZE)
 
     def draw(self, surface):
         rect = pygame.Rect(
@@ -124,9 +128,9 @@ class Apple(GameObject):
         pygame.draw.rect(surface, BORDER_COLOR, rect, 1)
 
     def randomize_position(self):
-
-        self.position = (randint(0, 20) * GRID_SIZE,
-                         randint(0, 20) * GRID_SIZE)
+        self.position = (randint(0, 31) * GRID_SIZE,
+                         randint(0, 23) * GRID_SIZE)
+    # Создаем рандомные координаты спавна яблока.
 
 
 def handle_keys(game_object):
@@ -159,7 +163,8 @@ def main():
 
         snake.update_direction()
         apple.draw(screen)
-        snake.get_head_position()
+
+        # Условия проверяющий что наша змейка кушает яблоко!
         if snake.positions[0] == apple.position:
             apple.randomize_position()
             snake.length += 1
