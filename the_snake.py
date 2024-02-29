@@ -133,7 +133,7 @@ class Snake(GameObject):
 class Apple(GameObject):
     """Класс Яблока"""
 
-    def __init__(self, snake_position, body_color=APPLE_COLOR) -> None:
+    def __init__(self, snake_position=[], body_color=APPLE_COLOR) -> None:
         # TODO: Передаем координаты змейки.
         super().__init__(body_color)
         self.snake_position = snake_position
@@ -159,27 +159,32 @@ class Apple(GameObject):
 
 def handle_keys(game_object):
     """Функция позволяет нам передвигатся змейкой"""
-    # TODO: Сделал словарь, сделал условия.
+    # TODO: Сделал словарь, сделал условия применил update_direction().
     som_dict = {
-        pygame.K_UP: UP,
-        pygame.K_DOWN: DOWN,
-        pygame.K_LEFT: LEFT,
-        pygame.K_RIGHT: RIGHT,
+        (pygame.K_UP, LEFT): UP,
+        (pygame.K_UP, RIGHT): UP,
+        (pygame.K_DOWN, LEFT): DOWN,
+        (pygame.K_DOWN, RIGHT): DOWN,
+        (pygame.K_LEFT, DOWN): LEFT,
+        (pygame.K_LEFT, UP): LEFT,
+        (pygame.K_RIGHT, DOWN): RIGHT,
+        (pygame.K_RIGHT, UP): RIGHT,
     }
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
             raise SystemExit
-        elif event.type == pygame.KEYDOWN:
-            direction = som_dict.get(event.key)
-            opposite_direction = (direction[0] * -1, direction[1] * -1)
-            if game_object.direction != opposite_direction:
-                game_object.update_direction(direction)
+        if event.type == pygame.KEYDOWN:
+            direction = som_dict.get(
+                (event.key, game_object.direction)
+            )
+            game_object.update_direction(direction)
 
 
 def main():
     """Функция создания объектов"""
+    # TODO: Тут передал в объект яблоко координаты змея.
     snake = Snake()
     snake_position = snake.positions
     apple = Apple(snake_position)
