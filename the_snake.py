@@ -74,13 +74,10 @@ class Snake(GameObject):
 
     def __init__(self, body_color=SNAKE_COLOR) -> None:
         # TODO: Я не могу убрать аргументы в reset() pytest не пропустит.
-        # Так что копирования кода тут необходимо(
+        # TODO: Мой косяк! Теперь всё работает.
         super().__init__(body_color)
-        self.next_direction = None
+        self.reset()
         self.last = None
-        self.positions = [self.position]
-        self.length = 1
-        self.direction = RIGHT
 
     def draw(self, surface):
         """
@@ -124,6 +121,7 @@ class Snake(GameObject):
 
     def reset(self):
         """Метод сбрасывает змейку в начальное состояние"""
+        self.next_direction = None
         self.positions = [self.position]
         self.length = 1
         self.direction = RIGHT
